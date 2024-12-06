@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}Welcome - Wellness Check-In{% endblock %}
+
+{% block content %}
+<div class="hero is-medium is-primary">
+    <div class="hero-body">
+        <div class="container">
+            <h1 class="title is-1">
+                Welcome to Wellness Check-In
+            </h1>
+            <h2 class="subtitle is-3">
+                Your daily companion for mental wellness
+            </h2>
+            {% if not current_user.is_authenticated %}
+            <div class="buttons">
+                <a href="{{ url_for('auth.register') }}" class="button is-light is-large">Get Started</a>
+                <a href="{{ url_for('auth.login') }}" class="button is-primary is-light is-large">Login</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<section class="section">
+    <div class="container">
+        <div class="columns is-centered features">
+            <div class="column">
+                <div class="box has-text-centered">
+                    <span class="icon is-large">
+                        <i class="fas fa-chart-line fa-2x"></i>
+                    </span>
+                    <h3 class="title is-4">Track Your Mood</h3>
+                    <p>Log your daily emotions and track your mental wellness journey over time.</p>
+                </div>
+            </div>
+            <div class="column">
+                <div class="box has-text-centered">
+                    <span class="icon is-large">
+                        <i class="fas fa-brain fa-2x"></i>
+                    </span>
+                    <h3 class="title is-4">AI-Powered Insights</h3>
+                    <p>Receive personalized reflections and suggestions based on your mood patterns.</p>
+                </div>
+            </div>
+            <div class="column">
+                <div class="box has-text-centered">
+                    <span class="icon is-large">
+                        <i class="fas fa-lock fa-2x"></i>
+                    </span>
+                    <h3 class="title is-4">Private & Secure</h3>
+                    <p>Your data is encrypted and kept private, ensuring your personal information stays secure.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

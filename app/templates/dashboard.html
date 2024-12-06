@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Wellness Check-In{% endblock %}
+
+{% block content %}
+<div class="columns">
+    <div class="column is-three-quarters">
+        <div class="box">
+            <h2 class="title is-4">Mood History</h2>
+            <canvas id="moodChart"></canvas>
+        </div>
+    </div>
+    <div class="column">
+        <div class="box">
+            <h3 class="title is-4">Quick Actions</h3>
+            <div class="buttons">
+                <a href="{{ url_for('main.new_mood') }}" class="button is-primary is-fullwidth">
+                    <span class="icon">
+                        <i class="fas fa-plus"></i>
+                    </span>
+                    <span>New Entry</span>
+                </a>
+            </div>
+        </div>
+        
+        <div class="box">
+            <h3 class="title is-4">Today's Stats</h3>
+            {% if moods and moods[0].created_at.date() == today %}
+                <div class="has-text-centered">
+                    <p class="is-size-1 mb-2">
+                        {% if moods[0].mood_category == 'Happy' %}
+                            😊
+                        {% elif moods[0].mood_category == 'Sad' %}
+                            😢
+                        {% elif moods[0].mood_category == 'Anxious' %}
+                            😰
+                        {% else %}
+                            😐
+                        {% endif %}
+                    </p>
+                    <p class="subtitle">{{ moods[0].mood_category }}</p>
+                    <p>Score: {{ moods[0].mood_score }}/10</p>
+                </div>
+            {% else %}
+                <p class="has-text-centered">No entry yet today</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="columns">
+    <div class="column">
+        <div class="box">
+            <h3 class="title is-4">Recent Entries</h3>
+            <div class="table-container">
+                <table class="table is-fullwidth">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Mood</th>
+                            <th>Score</th>
+                            <th>Reflection</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for mood in moods %}
+                        <tr>
+                            <td>{{ mood.created_at.strftime('%Y-%m-%d') }}</td>
+                            <td>{{ mood.mood_category }}</td>
+                            <td>{{ mood.mood_score }}/10</td>
+                            <td>{{ mood.reflection[:50] + '...' if mood.reflection else 'No reflection' }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const ctx = document.getElementById('moodChart').getContext('2d');
+    const moodData = {{ mood_data|tojson }};
+    
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: moodData.map(m => m.created_at),
+            datasets: [{
+                label: 'Mood Score',
+                data: moodData.map(m => m.mood_score),
+                borderColor: '#2c3e50',
+                backgroundColor: '#34495e',
+                tension: 0.1,
+                fill: false,
+                pointBackgroundColor: '#2c3e50',
+                pointBorderColor: '#2c3e50',
+                pointHoverBackgroundColor: '#34495e',
+                pointHoverBorderColor: '#34495e'
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 10,
+                    ticks: {
+                        stepSize: 1,
+                        color: '#666'
+                    },
+                    grid: {
+                        color: '#e0e0e0'
+                    }
+                },
+                x: {
+                    ticks: {
+                        color: '#666'
+                    },
+                    grid: {
+                        color: '#e0e0e0'
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top',
+                    labels: {
+                        color: '#2c3e50'
+                    }
+                }
+            }
+        }
+    });
+});
+</script>
+{% endblock %}

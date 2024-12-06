@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}New Entry - Wellness Check-In{% endblock %}
+
+{% block content %}
+<div class="columns is-centered">
+    <div class="column is-two-thirds">
+        <h1 class="title">New Mood Entry</h1>
+        <div class="box">
+            <form method="POST" action="{{ url_for('main.new_mood') }}">
+                <div class="field">
+                    <label class="label">How are you feeling?</label>
+                    <div class="control">
+                        <div class="select is-fullwidth">
+                            <select name="mood_category" required>
+                                <option value="">Select a mood</option>
+                                <option value="Happy">Happy 😊</option>
+                                <option value="Sad">Sad 😢</option>
+                                <option value="Anxious">Anxious 😰</option>
+                                <option value="Neutral">Neutral 😐</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label class="label">Rate your mood (1-10)</label>
+                    <div class="control">
+                        <input class="input" type="range" name="mood_score" min="1" max="10" value="5" 
+                               oninput="this.nextElementSibling.value = this.value">
+                        <output>5</output>/10
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label class="label">Reflection (optional)</label>
+                    <div class="control">
+                        <textarea class="textarea" name="reflection" 
+                                  placeholder="Share your thoughts about how you're feeling..."></textarea>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <div class="control">
+                        <button type="submit" class="button is-primary">Save Entry</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

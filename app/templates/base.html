@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Wellness Check-In{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.15.4/js/all.js"></script>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #34495e;
+            --accent-color: #7f8c8d;
+            --background-color: #f5f6fa;
+            --box-background: #ffffff;
+            --text-color: #2c3e50;
+            --text-light: #7f8c8d;
+        }
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+        }
+
+        .navbar {
+            background-color: var(--primary-color);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .navbar-item, .navbar-link {
+            color: #ffffff !important;
+        }
+
+        .navbar-item:hover, .navbar-link:hover {
+            background-color: var(--secondary-color) !important;
+        }
+
+        .title, .subtitle {
+            color: var(--text-color);
+        }
+
+        .box {
+            background-color: var(--box-background);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .button.is-primary {
+            background-color: var(--primary-color);
+            border-color: transparent;
+        }
+
+        .button.is-primary:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .table {
+            background-color: var(--box-background);
+        }
+
+        .table th {
+            color: var(--text-color);
+        }
+
+        .table td {
+            color: var(--text-light);
+        }
+
+        .notification {
+            background-color: var(--secondary-color);
+            color: #ffffff;
+        }
+
+        .notification.is-danger {
+            background-color: #e74c3c;
+        }
+
+        .notification.is-success {
+            background-color: #2ecc71;
+        }
+
+        .input, .textarea, .select select {
+            background-color: var(--background-color);
+            border-color: var(--accent-color);
+            color: var(--text-color);
+        }
+
+        .input:focus, .textarea:focus, .select select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.125em rgba(44, 62, 80, 0.25);
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar is-primary" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand">
+            <a class="navbar-item" href="{{ url_for('main.index') }}">
+                <strong>Wellness Check-In</strong>
+            </a>
+        </div>
+
+        <div class="navbar-menu">
+            <div class="navbar-end">
+                {% if current_user.is_authenticated %}
+                    <a class="navbar-item" href="{{ url_for('main.dashboard') }}">
+                        Dashboard
+                    </a>
+                    <a class="navbar-item" href="{{ url_for('main.new_mood') }}">
+                        New Entry
+                    </a>
+                    <a class="navbar-item" href="{{ url_for('main.profile') }}">
+                        Profile
+                    </a>
+                    <a class="navbar-item" href="{{ url_for('auth.logout') }}">
+                        Logout
+                    </a>
+                {% else %}
+                    <div class="navbar-item">
+                        <div class="buttons">
+                            <a class="button is-primary" href="{{ url_for('auth.register') }}">
+                                <strong>Sign up</strong>
+                            </a>
+                            <a class="button is-light" href="{{ url_for('auth.login') }}">
+                                Log in
+                            </a>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <section class="section">
+        <div class="container">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="notification is-{{ category }}">
+                            <button class="delete"></button>
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            {% block content %}{% endblock %}
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="content has-text-centered">
+            <p>
+                <strong>Wellness Check-In</strong> - Your daily mental wellness companion
+            </p>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
